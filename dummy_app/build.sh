@@ -1,1 +1,1 @@
-docker build . -t dummyapp.latest
+docker build . -t dummyapp:develop.latest
