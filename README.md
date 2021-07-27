@@ -32,13 +32,27 @@ Kind consists of:
 - kind load docker-image dummyapp:develop.latest
 - kubectl apply -f my-manifest-using-dummyapp:develop.latest
 
-TODO: Start here tomorrow, look at kubectl manifests
-
 - List images in cluster node with: `docker exec -it kind-control-plane crictl images`
 
 ## Other Kind commands
 - kind export logs ~/kindlogs
     - defaults to /tmp/[numbers]
+
+
+# Deploying a Manifest
+- kubectl apply -f dummy_deploy
+
+- kubectl get services
+    - Lists all services, including our dummyapp service
+- kubectl get deployment dummyapp
+- kubectl delete deployment dummyapp
+- kubectl delete service dummyapp
+
+- Delete by label:
+    kubectl delete deployment,services -l app=dummyapp
+
+- Delete by file:
+    kubectl delete -f dummy_deploy
 
 # Glossary
 - Cluster: Set of nodes

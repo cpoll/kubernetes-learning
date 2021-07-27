@@ -1,0 +1,67 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: dummyapp
+  labels:
+    app: dummyapp
+spec:
+  ports:
+    - port: 80
+  selector:
+    app: dummyapp
+    tier: frontend
+  type: LoadBalancer
+---
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: dummy-app-pv-claim
+#   labels:
+#     app: dummyapp
+# spec:
+#   accessModes:
+#     - ReadWriteOnce
+#   resources:
+#     requests:
+#       storage: 20Gi
+# ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dummyapp
+  labels:
+    app: dummyapp
+spec:
+  selector:
+    matchLabels:
+      app: dummyapp
+      tier: frontend
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: dummyapp
+        tier: frontend
+    spec:
+      containers:
+      - image: dummyapp:develop.latest
+        name: dummyapp
+        env:
+        - name: HELLO_WORLD_VALUE
+          value: "hi world"
+        - name: PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: dummy-password
+              key: password
+        ports:
+        - containerPort: 80
+          name: dummyapp
+        volumeMounts:
+        - name: dummyapp-persistent-storage
+          mountPath: /var/www/html
+      volumes:
+      - name: dummyapp-persistent-storage
+        persistentVolumeClaim:
+          claimName: dummyapp-pv-claim
