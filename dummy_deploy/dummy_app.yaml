@@ -12,19 +12,19 @@ spec:
     tier: frontend
   type: LoadBalancer
 ---
-# apiVersion: v1
-# kind: PersistentVolumeClaim
-# metadata:
-#   name: dummy-app-pv-claim
-#   labels:
-#     app: dummyapp
-# spec:
-#   accessModes:
-#     - ReadWriteOnce
-#   resources:
-#     requests:
-#       storage: 20Gi
-# ---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: dummyapp-pv-claim
+  labels:
+    app: dummyapp
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -50,10 +50,15 @@ spec:
         env:
         - name: HELLO_WORLD_VALUE
           value: "hi world"
+        - name: USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: dummy-username-password
+              key: username
         - name: PASSWORD
           valueFrom:
             secretKeyRef:
-              name: dummy-password
+              name: dummy-username-password
               key: password
         ports:
         - containerPort: 80

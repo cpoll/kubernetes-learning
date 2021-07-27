@@ -40,7 +40,7 @@ Kind consists of:
 
 
 # Deploying a Manifest
-- kubectl apply -f dummy_deploy
+- kubectl apply -f dummy_deploy [-r --recursive]
 
 - kubectl get services
     - Lists all services, including our dummyapp service
@@ -49,13 +49,54 @@ Kind consists of:
 - kubectl delete service dummyapp
 
 - Delete by label:
-    kubectl delete deployment,services -l app=dummyapp
+    kubectl delete deployment,services,persistentvolumeclaim -l app=dummyapp
 
 - Delete by file:
     kubectl delete -f dummy_deploy
+
+- kubectl get all [-l app=dummyapp]
+
+## Troubleshooting failures
+https://learnk8s.io/troubleshooting-deployments
+- Look at the state of the app
+    kubectl get all [-l app=dummyapp]
+        - all doesn't show everything, you need to do something cute like:
+            kubectl api-resources --verbs=list --namespaced -o name \
+  | xargs -n 1 kubectl get --show-kind --ignore-not-found -l app=dummyapp
+            see: https://github.com/kubernetes/kubectl/issues/151
+- Look for error messages
+    kubectl describe pod dummyapp
+        - Returns "0/1 nodes are available: 1 persistentvolumeclaim "dummyapp-pv-claim" not found."
+        - That's because I spelled it "dummy-app-pv-claim"
+- Fix and rerun manifest
+    kubectl apply -f dummy_deploy
+        - Note that we still have the misspelled persistentvolume, so you'll have to delete that
+- Find the next error
+    - kubectl describe pod dummyapp gives "Error: secret "dummy-password" not found"
+    - kubectl get secrets
+    - Add a secret
+        kubectl create secret generic dummy-username-password \
+            --from-literal=username=dummy-user \
+            --from-literal=password='hunter2'
+
+        "Opaque" is the type for "generic" arbitrary user secrets
+        TODO: Look into adding secrets with Kustomize
+    - You can read the secret if you have access to the cluster
+        kubectl get secrets/dummy-username-password -o yaml
+            The secrets are hidden in this format, but you can get them with --template. The output is just base64 encoded, you can decode in a one-liner
+        kubectl get secrets/dummy-username-password --template={{.data.password}} | base64 -D
 
 # Glossary
 - Cluster: Set of nodes
 - Pod: A set of running containers on the cluster. Smallest Kubernetes object.
     - StatefulSet: Set of Pods, providing guarantees about the ordering and uniqueness of the Pods. Like a Deployment, but the Pods inside are persistent.
 - Kubelet: Agent running on each node in the cluster. Makes sure containers are running in a Pod
+
+- Deployment: Definition for creating Pods
+- Service: Internal load balancer, routes traffic to Pods
+- Ingress: Load balancer at the edge of the cluster
+
+# Other reading
+https://kubernetes.io/docs/reference/kubectl/cheatsheet/
+https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/
+https://learnk8s.io/troubleshooting-deployments
