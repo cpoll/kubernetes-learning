@@ -86,6 +86,33 @@ https://learnk8s.io/troubleshooting-deployments
             The secrets are hidden in this format, but you can get them with --template. The output is just base64 encoded, you can decode in a one-liner
         kubectl get secrets/dummy-username-password --template={{.data.password}} | base64 -D
 
+    - read a pod config with
+        kubectl get pods dummyapp -o yaml
+        kubectl edit pods dummyapp
+
+## Deploying changes
+    - Kubernetes will pull upon Pod creation only if image is tagged :latest or imagePullPolicy: Always is specified.
+
+    - kubectl apply -f dummy_deploy --record
+    - kubectl scale deploy/dummyapp --replicas=3
+    - kubectl rollout status deploy/dummyapp
+    - kubectl rollout pause deploy/dummyapp
+    - kubect rollout resume deploy/dummyapp
+    - kubectl rollout history
+    - kubectl rollout undo
+    - kubectl rollout undo --to-revision=1
+
+# Networking
+https://kubernetes.io/docs/concepts/services-networking/connect-applications-service/
+
+- port in pod vs port in service?
+
+- TODO: What happens if you deploy two pods that are both on port 80 (with different services)
+    - Each pod gets their own IP address?
+
+- LoadBalancer external IP is pending. > Kubernetes does not offer an implementation of network load balancers (Services of type LoadBalancer) for bare-metal clusters. The implementations of network load balancers that Kubernetes does ship with are all glue code that calls out to various IaaS platforms (GCP, AWS, Azure…). If you’re not running on a supported IaaS platform (GCP, AWS, Azure…), LoadBalancers will remain in the “pending” state indefinitely when created. - https://metallb.universe.tf/
+
+
 # Glossary
 - Cluster: Set of nodes
 - Pod: A set of running containers on the cluster. Smallest Kubernetes object.
@@ -100,3 +127,9 @@ https://learnk8s.io/troubleshooting-deployments
 https://kubernetes.io/docs/reference/kubectl/cheatsheet/
 https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/
 https://learnk8s.io/troubleshooting-deployments
+
+
+# TODOS:
+- Using a develop.latest tag sucks (always haßßs), use a guid if you're not running a persistent CI
+- Can/should we get kind to pull from a Docker repo (including the local repo)?
+- https://kind.sigs.k8s.io/docs/user/local-registry/
