@@ -112,6 +112,24 @@ https://kubernetes.io/docs/concepts/services-networking/connect-applications-ser
 
 - LoadBalancer external IP is pending. > Kubernetes does not offer an implementation of network load balancers (Services of type LoadBalancer) for bare-metal clusters. The implementations of network load balancers that Kubernetes does ship with are all glue code that calls out to various IaaS platforms (GCP, AWS, Azure…). If you’re not running on a supported IaaS platform (GCP, AWS, Azure…), LoadBalancers will remain in the “pending” state indefinitely when created. - https://metallb.universe.tf/
 
+# Ingresses
+- Ingress objects use ingress controllers, which must be created seperately on your cluster.
+- If you go nginx, there are two ingresses, the Kube-maintained one and the Nginx-maintained one. The nginx one is not free.
+
+## Picking an Ingress
+- https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/
+- https://medium.com/flant-com/comparing-ingress-controllers-for-kubernetes-9b397483b46b
+- https://itnext.io/kubernetes-ingress-controllers-how-to-choose-the-right-one-part-1-41d3554978d2
+
+# Helm
+- helm install -f myvalues.yaml mydeployname ./path/to/chartdir
+    - TODO: Is it correct to have a myvalues.yaml for each deployment? Can we put the name in the yaml file?
+    - helm install -f dummy_chart/values.yaml dummy_helm_deploy ./dummy_chart
+- helm uninstall
+
+- helm history RELEASE_NAME
+- helm rollback <RELEASE> [REVISION] [flags]
+- helm create <chartname>
 
 # Glossary
 - Cluster: Set of nodes
