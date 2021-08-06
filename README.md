@@ -17,6 +17,7 @@ Kind consists of:
     - `--wait 5m` to wait until control plane is ready
     - docker ps will show a `kind-control-plane` image
     - `--config config.yaml` can specify a config (see: https://kind.sigs.k8s.io/docs/user/quick-start/)
+- If we want to use ingresses, use the command in the ingress section below
 
 - Once created, use `kubectl` to interact with it
     - The Kind config file is stored in ~/.kube/config or path in $KUBECONFIG if set.
@@ -115,6 +116,49 @@ https://kubernetes.io/docs/concepts/services-networking/connect-applications-ser
 # Ingresses
 - Ingress objects use ingress controllers, which must be created seperately on your cluster.
 - If you go nginx, there are two ingresses, the Kube-maintained one and the Nginx-maintained one. The nginx one is not free.
+
+## Installing nginx ingress on Kind
+https://kind.sigs.k8s.io/docs/user/ingress/#ingress-nginx
+
+    ```
+cat <<EOF | kind create cluster --config=-
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+- role: control-plane
+  kubeadmConfigPatches:
+  - |
+    kind: InitConfiguration
+    nodeRegistration:
+      kubeletExtraArgs:
+        node-labels: "ingress-ready=true"
+  extraPortMappings:
+  - containerPort: 80
+    hostPort: 80
+    protocol: TCP
+  - containerPort: 443
+    hostPort: 443
+    protocol: TCP
+EOF
+    ```
+    - extraPortMappings allow the local host to make requests to the Ingress controller over ports 80/443
+    - node-labels only allow the ingress controller to run on a specific node(s) matching the label selector
+
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
+
+kubectl wait --namespace ingress-nginx \
+  --for=condition=ready pod \
+  --selector=app.kubernetes.io/component=controller \
+  --timeout=90s
+
+kubectl apply -f echo_service
+
+# should output "foo"
+curl localhost/foo
+# should output "bar"
+curl localhost/bar
+
+
 
 ## Picking an Ingress
 - https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/
