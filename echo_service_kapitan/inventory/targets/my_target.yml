@@ -1,6 +1,6 @@
 classes:
   - common
-  - my_component
+  - echo_deploy
 
 parameters:
   target_name: my_target

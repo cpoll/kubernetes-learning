@@ -150,18 +150,21 @@ curl localhost/bar
 - Basic structure created with `kapitan init`
 - Render target with `kapitan inventory -t my_target`
 - Search inventories where variable is declared with `kapitan searchvar parameters.target_name`
-- kapitan compile
+- `kapitan compile`
 
 ## Default Hierarchy
-/components
-    jsonnet files which each correspond to an application
+/compiled
+    destination for compiled templates (subpath defined in classes)
 /inventory
     /classes
         inventory values to be inherited by targets
+        also usually defines `parameters.kapitan` which specifies inputs, output path, etc.
     /targets
         e.g. dev.yml, staging.yml, prod.yml
 /templates
     Jinja2 and Kadet templates
+    note that this folder can be named anything you want, or split into folders, it's being referenced
+    by `parameters.kapitan.input_paths` in `echo_deploy.yml`
 /refs
     secrets referenced in inventory
 
