@@ -1,6 +1,0 @@
-classes:
-  - common
-  - echo_deploy
-
-parameters:
-  target_name: my_target

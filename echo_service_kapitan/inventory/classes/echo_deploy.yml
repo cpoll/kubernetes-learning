@@ -1,6 +1,6 @@
 parameters:
-  your_component:
-    some_parameter: true
+  # your_component:
+  #   some_parameter: true
 
   kapitan:
     compile:

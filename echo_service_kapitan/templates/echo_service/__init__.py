@@ -8,8 +8,15 @@ labels = kadet.BaseObj.from_dict({"app": name})
 
 def main():
     output = kadet.BaseObj()
-    output.root.my_kadet_component = name
+
+    # Weird thing: Creates a file called echo_service.yaml, where the content is "other_component",
+    # but split up... because a Python string is array-like?
+    output.root.echo_service = name
+
     output.root.labels = labels
+
+    output.root.test = [1, 2, 3]
+
     return output
 
 
