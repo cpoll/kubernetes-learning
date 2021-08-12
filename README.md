@@ -124,9 +124,9 @@ https://kind.sigs.k8s.io/docs/user/ingress/#ingress-nginx
 
 - kubectl apply -f echo_service
 
-# should output "foo"
+- should output "foo"
 curl localhost/foo
-# should output "bar"
+- should output "bar"
 curl localhost/bar
 
 
@@ -145,6 +145,25 @@ curl localhost/bar
 - helm history RELEASE_NAME
 - helm rollback <RELEASE> [REVISION] [flags]
 - helm create <chartname>
+
+# Kapitan
+- Basic structure created with `kapitan init`
+- Render target with `kapitan inventory -t my_target`
+- Search inventories where variable is declared with `kapitan searchvar parameters.target_name`
+- kapitan compile
+
+## Default Hierarchy
+/components
+    jsonnet files which each correspond to an application
+/inventory
+    /classes
+        inventory values to be inherited by targets
+    /targets
+        e.g. dev.yml, staging.yml, prod.yml
+/templates
+    Jinja2 and Kadet templates
+/refs
+    secrets referenced in inventory
 
 # Glossary
 - Cluster: Set of nodes
