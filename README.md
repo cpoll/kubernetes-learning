@@ -142,6 +142,8 @@ curl localhost/bar
     - helm install -f dummy_chart/values.yaml dummy_helm_deploy ./dummy_chart
 - helm uninstall
 
+- The resulting template can be seen with --dry-run or with `helm template -f myvalues.yaml mydeployname ./path/to/chartdir
+
 - helm history RELEASE_NAME
 - helm rollback <RELEASE> [REVISION] [flags]
 - helm create <chartname>
