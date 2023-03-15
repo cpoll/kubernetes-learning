@@ -1,0 +1,11 @@
+parameters:
+  # your_component:
+  #   some_parameter: true
+
+  kapitan:
+    compile:
+      - output_path: echo_service.yaml
+        input_type: kadet
+        output_type: yaml
+        input_paths:
+          - templates/echo_service/

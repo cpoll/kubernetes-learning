@@ -1,0 +1,13 @@
+classes:
+  - common
+  - echo_deploy
+
+parameters:
+  target_name: echo_service_dev
+
+  # TODO: make this an array
+  foo_version: hashicorp/http-echo:0.2.3
+  bar_version: hashicorp/http-echo:0.2.3
+
+  foo_args: -text=foo
+  bar_args: -text=bar

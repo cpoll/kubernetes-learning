@@ -124,9 +124,9 @@ https://kind.sigs.k8s.io/docs/user/ingress/#ingress-nginx
 
 - kubectl apply -f echo_service
 
-# should output "foo"
+- should output "foo"
 curl localhost/foo
-# should output "bar"
+- should output "bar"
 curl localhost/bar
 
 
@@ -142,9 +142,33 @@ curl localhost/bar
     - helm install -f dummy_chart/values.yaml dummy_helm_deploy ./dummy_chart
 - helm uninstall
 
+- The resulting template can be seen with --dry-run or with `helm template -f myvalues.yaml mydeployname ./path/to/chartdir
+
 - helm history RELEASE_NAME
 - helm rollback <RELEASE> [REVISION] [flags]
 - helm create <chartname>
+
+# Kapitan
+- Basic structure created with `kapitan init`
+- Render target with `kapitan inventory -t my_target`
+- Search inventories where variable is declared with `kapitan searchvar parameters.target_name`
+- `kapitan compile`
+
+## Default Hierarchy
+/compiled
+    destination for compiled templates (subpath defined in classes)
+/inventory
+    /classes
+        inventory values to be inherited by targets
+        also usually defines `parameters.kapitan` which specifies inputs, output path, etc.
+    /targets
+        e.g. dev.yml, staging.yml, prod.yml
+/templates
+    Jinja2 and Kadet templates
+    note that this folder can be named anything you want, or split into folders, it's being referenced
+    by `parameters.kapitan.input_paths` in `echo_deploy.yml`
+/refs
+    secrets referenced in inventory
 
 # Glossary
 - Cluster: Set of nodes
