@@ -46,10 +46,27 @@ metadata:
 spec:
   selector:
     app: mongo-express
-  type: LoadBalancer
   ports:
     - protocol: TCP
       port: 8081
       targetPort: 8081
-      nodePort: 30001
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mongo-express-ingress
+  namespace: mongodb-tutorial
+spec:
+  rules:
+    - host: mongoexpress.local
+      http:
+        paths:
+          - pathType: Prefix
+            path: "/"
+            backend:
+              service: 
+                name: mongo-express-service
+                port:
+                  number: 8081
 
